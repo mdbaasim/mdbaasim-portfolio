@@ -348,10 +348,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11. Dynamic Scroll Reveal Animations
+  // 11. Continuous Reversible Scroll Reveal Animations (triggers every time you scroll)
   if ('IntersectionObserver' in window) {
     const observerOptions = {
-      threshold: 0.1,
+      threshold: 0.12,
       rootMargin: '0px 0px -40px 0px'
     };
 
@@ -359,19 +359,15 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
-          revealObserver.unobserve(entry.target);
+        } else {
+          // Reset when scrolled out so it animates fresh every time you scroll
+          entry.target.classList.remove('revealed');
         }
       });
     }, observerOptions);
 
     document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      // If already partially in top screen on first load, reveal with slight delay
-      if (rect.top < window.innerHeight * 0.7) {
-        setTimeout(() => el.classList.add('revealed'), 100);
-      } else {
-        revealObserver.observe(el);
-      }
+      revealObserver.observe(el);
     });
   } else {
     document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('revealed'));
